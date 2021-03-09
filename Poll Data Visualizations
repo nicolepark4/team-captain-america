@@ -1,0 +1,16 @@
+trump_biden <- read.csv("trump_biden_polls.csv", header = TRUE, sep = ",")
+
+# Creating the pie chart showing the percetnage of total polls by pollster
+only_t_b <- which(trump_biden$answer == c("Biden", "Trump"))
+data_2 <- data.frame("Pollster" = trump_biden$pollster[only_t_b], "Candidate" = trump_biden$answer[only_t_b], "Party" = trump_biden$partisan[only_t_b], "State" = trump_biden$state[only_t_b])
+numb_polls <- sort(tapply(data_2$Candidate, data_2$Pollster, length))
+numb_polls_10 <- tail(numb_polls, n = 10)
+num_polls_10 <- as.numeric(numb_polls_10)
+pie(num_polls_10, labels = names(numb_polls_10), main = "Percentage of Total Polls by Pollster")
+
+# Creating the bar chart showing the difference in total poll predictions for Biden vs. Trump
+library(ggplot2)
+num_biden <- sum(data_2$Candidate == "Biden")
+num_trump <- sum(data_2$Candidate == "Trump")
+biden_v_trump_plot <- barplot(c(num_biden, num_trump), main = "Predictions for Biden and Trump", xlab = "Candidate Name", ylab = "Aggregate Number of Polls Predicting Win", names.arg = c("Biden", "Trump"), col = c("blue", "red"))
+num_trump - num_biden # Difference between number of polls who predicted Trump would win vs. Biden
